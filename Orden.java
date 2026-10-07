@@ -39,17 +39,31 @@ public class Orden{
         this.piña = piña;
     }
 
-    public void validarOrden(){
+    public boolean validarOrden(){
         if (cocina.preguntarPorOrdenes()) {
             cocina.agregarOrden(this);
-            System.out.println("Orden aceptada");
+            return true;
         } else {
-            rechazarOrden();
+            return false;
         }
     }
 
     public void rechazarOrden(){
         System.out.println("Orden rechazada. La cocina está llena.");
+    }
+
+    public int getId(){ return id; }
+    public Cliente getCliente(){ return cliente; }
+
+    public String descripcion(){
+        String encabezado = "Orden #" + id + "\nCliente: " + cliente.getNombre() + "\n";
+        if (tipo != null) return encabezado + "Pizza: " + tipo + "\nBase: MASA_Y_QUESO\nSalsa: SALADA\nOrilla: NORMAL\n" +
+            (tipo == Pizzas.HAWAYANA ? "Jamón: 20\nPiña: 40" :
+             tipo == Pizzas.PEPPERONI ? "Pepperoni: 40" :
+             tipo == Pizzas.JAMON ? "Jamón: 40" : "Jamón: 20\nPepperoni: 20\nPimientos: 20\nChampiñones: 20");
+        return encabezado + "Pizza personalizada\nBase: " + base + "\nSalsa: " + salsa +
+            "\nOrilla: " + orilla + "\nJamón: " + jamon + "\nPepperoni: " + pepperoni +
+            "\nPimientos: " + pimientos + "\nChampiñones: " + champiñones + "\nPiña: " + piña;
     }
 
     public Pizzas getTipo(){

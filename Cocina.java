@@ -21,7 +21,7 @@ public class Cocina {
         return false;
     }
 
-    public void realizarOrden(){
+    public boolean realizarOrden(){
             
             for (int i = 0; i < ordenesPendientes.length; i++){
 
@@ -84,14 +84,14 @@ public class Cocina {
                 }
 
                 ordenesRealizadas += 1;
-                return;
+                return true;
             }
         }
 
-        System.out.println("No hay órdenes pendientes.");
+        return false;
     }
 
-    public void entregarOrden(){
+    public Orden entregarOrden(){
         for (int i = 0; i < ordenesPendientes.length; i++){
 
             if (ordenesPendientes[i] != null){
@@ -118,11 +118,26 @@ public class Cocina {
 
                 ordenesPendientes[i] = null;
 
-                return;
+                return orden;
             }
         }
+        return null;
     }
     
+
+    public int pendientes(){
+        int cantidad = 0;
+        for (Orden orden : ordenesPendientes) if (orden != null) cantidad++;
+        return cantidad;
+    }
+
+    public String listarOrdenes(){
+        StringBuilder texto = new StringBuilder();
+        for (Orden orden : ordenesPendientes) {
+            if (orden != null) texto.append(orden.descripcion()).append("\n\n");
+        }
+        return texto.length() == 0 ? "No hay órdenes pendientes." : texto.toString();
+    }
 
     public void setEmpleados(int empleados){
         this.empleados = empleados;

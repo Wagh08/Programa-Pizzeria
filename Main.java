@@ -1,203 +1,135 @@
-import java.util.Scanner;
+import javax.swing.*;
+import java.awt.*;
 
 public class Main {
+    private final Cocina cocina = new Cocina(5, 2);
+    private final JFrame ventana = new JFrame("Pizzería - Hacer pedido");
+    private final JTextField nombre = new JTextField(16);
+    private final JSpinner edad = new JSpinner(new SpinnerNumberModel(18, 1, 120, 1));
+    private final JRadioButton predeterminada = new JRadioButton("Del menú", true);
+    private final JRadioButton personalizada = new JRadioButton("Personalizada");
+    private final JComboBox<Pizzas> tipo = new JComboBox<>(Pizzas.values());
+    private final JComboBox<Bases> base = new JComboBox<>(Bases.values());
+    private final JComboBox<Salsas> salsa = new JComboBox<>(Salsas.values());
+    private final JComboBox<Orillas> orilla = new JComboBox<>(Orillas.values());
+    private final JSpinner[] cantidades = new JSpinner[5];
+    private final JPanel opcionesMenu = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    private final JPanel opcionesPersonalizadas = new JPanel(new GridLayout(0, 2, 8, 8));
+    private final JLabel estado = new JLabel("Órdenes pendientes: 0/5");
+    private Orden ultimaOrden;
 
     public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new Main().mostrar());
+    }
 
-        Scanner scanner = new Scanner(System.in);
+    private void mostrar() {
+        ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        ventana.setLayout(new BorderLayout(10, 10));
+        JPanel contenido = new JPanel();
+        contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
+        contenido.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
 
-        Cocina cocina = new Cocina(5, 2);
+        JPanel cliente = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        cliente.setBorder(BorderFactory.createTitledBorder("Cliente"));
+        cliente.add(new JLabel("Nombre:")); cliente.add(nombre);
+        cliente.add(new JLabel("Edad:")); cliente.add(edad);
+        contenido.add(cliente);
 
-        System.out.print("Ingrese su nombre: ");
-        String nombre = scanner.nextLine();
+        JPanel eleccion = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        eleccion.setBorder(BorderFactory.createTitledBorder("Tipo de pizza"));
+        ButtonGroup grupo = new ButtonGroup();
+        grupo.add(predeterminada); grupo.add(personalizada);
+        eleccion.add(predeterminada); eleccion.add(personalizada);
+        contenido.add(eleccion);
 
-        System.out.print("Ingrese su edad: ");
-        int edad = scanner.nextInt();
+        opcionesMenu.setBorder(BorderFactory.createTitledBorder("Pizza del menú"));
+        opcionesMenu.add(new JLabel("Elige una:")); opcionesMenu.add(tipo);
+        contenido.add(opcionesMenu);
 
-        Cliente cliente = new Cliente(nombre, edad);
-
-        int opcion = 0;
-
-        while (opcion != 3) {
-
-            System.out.println("\n===== PIZZERIA =====");
-            System.out.println("1. Hacer pedido");
-            System.out.println("2. Recibir una orden");
-            System.out.println("3. Salir");
-            System.out.print("Seleccione una opcion: ");
-
-            opcion = scanner.nextInt();
-
-            switch (opcion) {
-
-                case 1:
-
-                    System.out.println("\n===== TIPO DE PIZZA =====");
-                    System.out.println("1. Pepperoni");
-                    System.out.println("2. Hawayana");
-                    System.out.println("3. Jamon");
-                    System.out.println("4. Deluxe");
-                    System.out.println("5. Personalizada");
-                    System.out.print("Seleccione una opcion: ");
-
-                    int tipoPizza = scanner.nextInt();
-
-                    switch (tipoPizza) {
-
-                        case 1:
-                            cliente.hacerPedido(Pizzas.PEPPERONI, cocina);
-                            break;
-
-                        case 2:
-                            cliente.hacerPedido(Pizzas.HAWAYANA, cocina);
-                            break;
-
-                        case 3:
-                            cliente.hacerPedido(Pizzas.JAMON, cocina);
-                            break;
-
-                        case 4:
-                            cliente.hacerPedido(Pizzas.DELUXE, cocina);
-                            break;
-
-                        case 5:
-
-                            System.out.println("\n===== BASE =====");
-                            System.out.println("1. Masa");
-                            System.out.println("2. Queso");
-                            System.out.println("3. Masa y queso");
-                            System.out.print("Seleccione una opcion: ");
-
-                            int opcionBase = scanner.nextInt();
-                            Bases base;
-
-                            switch (opcionBase) {
-
-                                case 1:
-                                    base = Bases.MASA;
-                                    break;
-
-                                case 2:
-                                    base = Bases.QUESO;
-                                    break;
-
-                                case 3:
-                                    base = Bases.MASA_Y_QUESO;
-                                    break;
-
-                                default:
-                                    System.out.println("Base no valida.");
-                                    continue;
-                            }
-
-                            System.out.println("\n===== SALSA =====");
-                            System.out.println("1. Dulce");
-                            System.out.println("2. Salada");
-                            System.out.println("3. Picante");
-                            System.out.print("Seleccione una opcion: ");
-
-                            int opcionSalsa = scanner.nextInt();
-                            Salsas salsa;
-
-                            switch (opcionSalsa) {
-
-                                case 1:
-                                    salsa = Salsas.DULCE;
-                                    break;
-
-                                case 2:
-                                    salsa = Salsas.SALADA;
-                                    break;
-
-                                case 3:
-                                    salsa = Salsas.PICANTE;
-                                    break;
-
-                                default:
-                                    System.out.println("Salsa no valida.");
-                                    continue;
-                            }
-
-                            System.out.println("\n===== ORILLA =====");
-                            System.out.println("1. Normal");
-                            System.out.println("2. Rellena de queso");
-                            System.out.print("Seleccione una opcion: ");
-
-                            int opcionOrilla = scanner.nextInt();
-                            Orillas orilla;
-
-                            switch (opcionOrilla) {
-
-                                case 1:
-                                    orilla = Orillas.NORMAL;
-                                    break;
-
-                                case 2:
-                                    orilla = Orillas.RELLENA_QUESO;
-                                    break;
-
-                                default:
-                                    System.out.println("Orilla no valida.");
-                                    continue;
-                            }
-
-                            System.out.print("Cantidad de jamon: ");
-                            int jamon = scanner.nextInt();
-
-                            System.out.print("Cantidad de pepperoni: ");
-                            int pepperoni = scanner.nextInt();
-
-                            System.out.print("Cantidad de pimientos: ");
-                            int pimientos = scanner.nextInt();
-
-                            System.out.print("Cantidad de champiñones: ");
-                            int champiñones = scanner.nextInt();
-
-                            System.out.print("Cantidad de piña: ");
-                            int piña = scanner.nextInt();
-
-                            cliente.hacerPedido(
-                                base,
-                                salsa,
-                                orilla,
-                                jamon,
-                                pepperoni,
-                                pimientos,
-                                champiñones,
-                                piña,
-                                cocina
-                            );
-
-                            break;
-
-                        default:
-                            System.out.println("Tipo de pizza no valido.");
-                            break;
-                    }
-
-                    break;
-
-                case 2:
-
-                    cocina.realizarOrden();
-                    cocina.entregarOrden();
-
-                    break;
-
-                case 3:
-
-                    System.out.println("Gracias por su visita.");
-
-                    break;
-
-                default:
-
-                    System.out.println("Opcion no valida.");
-
-                    break;
-            }
+        opcionesPersonalizadas.setBorder(BorderFactory.createTitledBorder("Personaliza tu pizza"));
+        opcionesPersonalizadas.add(new JLabel("Base:")); opcionesPersonalizadas.add(base);
+        opcionesPersonalizadas.add(new JLabel("Salsa:")); opcionesPersonalizadas.add(salsa);
+        opcionesPersonalizadas.add(new JLabel("Orilla:")); opcionesPersonalizadas.add(orilla);
+        String[] ingredientes = {"Jamón", "Pepperoni", "Pimientos", "Champiñones", "Piña"};
+        for (int i = 0; i < ingredientes.length; i++) {
+            opcionesPersonalizadas.add(new JLabel(ingredientes[i] + ":"));
+            cantidades[i] = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+            opcionesPersonalizadas.add(cantidades[i]);
         }
+        contenido.add(opcionesPersonalizadas);
+        predeterminada.addActionListener(e -> cambiarModo());
+        personalizada.addActionListener(e -> cambiarModo());
+        cambiarModo();
+        ventana.add(contenido, BorderLayout.CENTER);
 
-        scanner.close();
+        JPanel acciones = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JButton pedir = new JButton("Confirmar pedido");
+        JButton ver = new JButton("Ver última orden");
+        JButton pendientes = new JButton("Ver pendientes");
+        JButton entregar = new JButton("Preparar y entregar");
+        pedir.addActionListener(e -> confirmar());
+        ver.addActionListener(e -> dialogo("Última orden", ultimaOrden == null ? "Aún no hay una orden confirmada." : ultimaOrden.descripcion()));
+        pendientes.addActionListener(e -> dialogo("Órdenes pendientes", cocina.listarOrdenes()));
+        entregar.addActionListener(e -> {
+            if (!cocina.realizarOrden()) {
+                dialogo("Cocina", "No hay órdenes pendientes.");
+                return;
+            }
+            Orden lista = cocina.entregarOrden();
+            actualizarEstado();
+            dialogo("Orden entregada", lista.descripcion());
+        });
+        acciones.add(pedir); acciones.add(ver); acciones.add(pendientes); acciones.add(entregar);
+        JPanel pie = new JPanel(new BorderLayout());
+        pie.add(acciones, BorderLayout.CENTER); pie.add(estado, BorderLayout.SOUTH);
+        ventana.add(pie, BorderLayout.SOUTH);
+        ventana.pack();
+        ventana.setMinimumSize(new Dimension(610, ventana.getHeight()));
+        ventana.setLocationRelativeTo(null);
+        ventana.setVisible(true);
+    }
+
+    private void cambiarModo() {
+        opcionesMenu.setVisible(predeterminada.isSelected());
+        opcionesPersonalizadas.setVisible(personalizada.isSelected());
+        ventana.pack();
+    }
+
+    private void confirmar() {
+        String texto = nombre.getText().trim();
+        if (texto.isEmpty()) {
+            JOptionPane.showMessageDialog(ventana, "Escribe el nombre del cliente.", "Dato faltante", JOptionPane.WARNING_MESSAGE);
+            nombre.requestFocusInWindow();
+            return;
+        }
+        if (!cocina.preguntarPorOrdenes()) {
+            dialogo("Cocina llena", "Hay 5 órdenes pendientes. Prepara y entrega una antes de continuar.");
+            return;
+        }
+        Cliente cliente = new Cliente(texto, (Integer) edad.getValue());
+        if (predeterminada.isSelected()) {
+            ultimaOrden = cliente.hacerPedido((Pizzas) tipo.getSelectedItem(), cocina);
+        } else {
+            ultimaOrden = cliente.hacerPedido((Bases) base.getSelectedItem(), (Salsas) salsa.getSelectedItem(),
+                (Orillas) orilla.getSelectedItem(), (Integer) cantidades[0].getValue(),
+                (Integer) cantidades[1].getValue(), (Integer) cantidades[2].getValue(),
+                (Integer) cantidades[3].getValue(), (Integer) cantidades[4].getValue(), cocina);
+        }
+        if (ultimaOrden != null) {
+            actualizarEstado();
+            dialogo("Pedido confirmado", ultimaOrden.descripcion());
+        }
+    }
+
+    private void actualizarEstado() {
+        estado.setText("Órdenes pendientes: " + cocina.pendientes() + "/5");
+    }
+
+    private void dialogo(String titulo, String descripcion) {
+        JTextArea texto = new JTextArea(descripcion, 12, 34);
+        texto.setEditable(false);
+        texto.setLineWrap(true);
+        texto.setWrapStyleWord(true);
+        JOptionPane.showMessageDialog(ventana, new JScrollPane(texto), titulo, JOptionPane.INFORMATION_MESSAGE);
     }
 }
